@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Be My Valentine 💖</title>
+<style>
+/* Body and general styling */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg,#ff9a9e,#fecfef);
+  overflow: hidden;
+  text-align: center;
+  position: relative;
+}
+
+/* Start screen */
+#startScreen {
+  position: fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background: black;
+  color: white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size: 30px;
+  z-index: 9999;
+  cursor: pointer;
+}
+
+/* Floating photo */
+img {
+  width: 240px;
+  border-radius: 20px;
+  box-shadow: 0 0 25px rgba(0,0,0,0.4);
+  animation: float 3s infinite ease-in-out;
+  z-index:1;
+  position: relative;
+}
+@keyframes float{
+  0% {transform: translateY(0);}
+  50% {transform: translateY(-20px);}
+  100% {transform: translateY(0);}
+}
+
+/* Buttons */
+#buttons { margin-top: 20px; }
+button {
+  padding: 15px 30px;
+  font-size: 20px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.3s;
+  position: absolute;
+  z-index: 2;
+}
+#yes { background: #ff4d6d; color: white; display: none; left:50%; transform:translateX(-50%); }
+#no { background: #555; color: white; left:50%; transform:translateX(-50%); }
+
+/* Floating Hearts */
+.heart {
+  position: absolute;
+  animation: fall 6s linear infinite;
+  z-index:0;
+}
+@keyframes fall {
+  0% {transform: translateY(-10vh);}
+  100% {transform: translateY(110vh);}
+}
+
+/* Dynamic messages */
+#message {
+  position: absolute;
+  top: 15%;
+  width: 100%;
+  font-size: 22px;
+  color: #222;
+  z-index: 3;
+  text-align: center;
+}
+
+/* Canvas */
+canvas { position: fixed; top:0; left:0; z-index:1; }
+
+/* Rose overlay */
+#roseScreen {
+  display: none;
+  position: fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background: black;
+  color: white;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  z-index: 9999;
+}
+
+/* Rose YES button */
+#foreverYes {
+  margin-top: 20px;
+  padding: 15px 30px;
+  font-size: 20px;
+  background: #ff4d6d;
+  color:white;
+  border:none;
+  border-radius:12px;
+  opacity:0;
+  animation:fadeIn 2s forwards;
+  animation-delay: 5s;
+}
+
+/* Letter envelope */
+#letterEnvelope {
+  position: fixed;
+  top:50%;
+  left:50%;
+  transform: translate(-50%,-50%) scale(0);
+  font-size:80px;
+  transition: 1s;
+  z-index:10000;
+}
+
+/* Letter content */
+#letterContent {
+  position: fixed;
+  top:50%;
+  left:50%;
+  transform: translate(-50%,-50%) scale(0);
+  background:white;
+  color:black;
+  padding:30px;
+  border-radius:15px;
+  box-shadow:0 0 20px rgba(0,0,0,0.5);
+  font-size:18px;
+  text-align:center;
+  width: 350px;
+  z-index:10000;
+}
+
+/* FadeIn Keyframes */
+@keyframes fadeIn { to {opacity:1;} }
+</style>
+</head>
+<body>
+
+<!-- Start Screen -->
+<div id="startScreen">Tap to Start 💖</div>
+
+<!-- Music -->
+<audio id="bgmusic" loop>
+  <source src="./music.mp3" type="audio/mpeg">
+</audio>
+
+<h1>Do you want to be my Valentine? 💖</h1>
+<img src="./photo.jpg">
+<div id="message">Make your choice 💖</div>
+
+<div id="buttons">
+  <button id="yes">Yes 💘</button>
+  <button id="no">No 😢</button>
+</div>
+
+<!-- Rose overlay -->
+<div id="roseScreen">
+  <canvas id="roseCanvas" width="600" height="600"></canvas>
+  <h1 style="margin-top:20px;">Will you stay by my side forever?</h1>
+  <button id="foreverYes">Yes ❤️</button>
+  <div id="letterEnvelope">💌</div>
+  <div id="letterContent">
+    <h3>For You</h3>
+    <p>
+      You’re the best friend anyone could ask for.<br>
+      You’re one of the most charming people I know, and truly an angel in my life.<br>
+      I can’t imagine my life without you. You’re precious to me, and I’ll always love you despite our fights and misunderstandings.<br>
+      My hope is that we’ll always be together, no matter how far life takes us.<br>
+      You’re truly the bestest friend I’ve ever had, and I want you to promise me that you’ll never leave my side.<br>
+      You’ll always be my one and only best friend, so that until the day we die, we can be together. ❤️
+    </p>
+  </div>
+</div>
+
+<script>
+// 🎵 Start music on click
+document.getElementById("startScreen").onclick = function(){
+  let music = document.getElementById("bgmusic");
+  music.currentTime = 20;
+  music.play();
+  this.style.display = "none";
+};
+
+// 🌈 Floating Hearts
+const colors=["❤️","💖","💗","💓","💞","💕","💘"];
+setInterval(()=>{
+  let heart = document.createElement("div");
+  heart.innerHTML = colors[Math.floor(Math.random()*colors.length)];
+  heart.className="heart";
+  heart.style.left = Math.random()*100+"vw";
+  heart.style.fontSize = (20+Math.random()*25)+"px";
+  document.body.appendChild(heart);
+  setTimeout(()=>heart.remove(),6000);
+},300);
+
+// 😈 NO button logic
+let no=document.getElementById("no");
+let yes=document.getElementById("yes");
+let message=document.getElementById("message");
+let clicks=0;
+const messages=[
+  "Oh no! Why are you saying NO? 😢",
+  "Please don't reject me 💔",
+  "Why are you doing this? 😭",
+  "I'm sad 💔"
+];
+
+no.addEventListener("click",()=>{
+  clicks++;
+  no.style.left=Math.random()*80+"vw";
+  no.style.top=Math.random()*70+"vh";
+  message.innerText = messages[clicks%messages.length];
+  if(clicks>=5){
+    no.style.display="none";
+    yes.style.display="block";
+    yes.style.top="60%";
+  }
+});
+
+// 🎆 YES click → fireworks & confetti → rose
+yes.onclick = function(){
+  const yayText = document.createElement("h1");
+  yayText.style.cssText="margin-top:80px;font-size:50px;color:white;text-shadow:0 0 20px red;position:fixed;top:30%;width:100%;z-index:999;";
+  yayText.innerHTML = "YAYYYY 💖<br>You are my Valentine 😍";
+  document.body.appendChild(yayText);
+
+  // Fireworks canvas
+  const canvas = document.createElement("canvas");
+  canvas.id="fireworks";
+  document.body.appendChild(canvas);
+
+  startFireworks();
+  startConfetti();
+
+  // Remove YAY text after 4s, then show rose overlay
+  setTimeout(()=>{
+    yayText.remove();
+    showRoseScreen();
+  },4000);
+};
+
+// 🎇 Fireworks
+function startFireworks(){
+  const canvas=document.getElementById("fireworks");
+  const ctx=canvas.getContext("2d");
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+
+  let particles=[];
+  function createFirework(x,y){
+    for(let i=0;i<120;i++){
+      particles.push({
+        x:x, y:y, radius:2,
+        color:`hsl(${Math.random()*360},100%,60%)`,
+        speedX:(Math.random()-0.5)*8,
+        speedY:(Math.random()-0.5)*8,
+        life:120
+      });
+    }
+  }
+
+  function animate(){
+    ctx.fillStyle="rgba(0,0,0,0.2)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    particles.forEach((p,index)=>{
+      p.x+=p.speedX; p.y+=p.speedY; p.life--;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.radius,0,Math.PI*2);
+      ctx.fillStyle=p.color;
+      ctx.fill();
+      if(p.life<=0) particles.splice(index,1);
+    });
+    requestAnimationFrame(animate);
+  }
+
+  setInterval(()=>{
+    createFirework(Math.random()*canvas.width,Math.random()*canvas.height/2);
+  },900);
+
+  animate();
+}
+
+// 🎊 Confetti
+function startConfetti(){
+  setInterval(()=>{
+    let conf=document.createElement("div");
+    conf.style.position="fixed";
+    conf.style.width="8px";
+    conf.style.height="8px";
+    conf.style.background=`hsl(${Math.random()*360},100%,50%)`;
+    conf.style.left=Math.random()*100+"vw";
+    conf.style.top="-10px";
+    document.body.appendChild(conf);
+    let fall=setInterval(()=>{
+      conf.style.top=(conf.offsetTop+5)+"px";
+      if(conf.offsetTop>window.innerHeight){
+        conf.remove();
+        clearInterval(fall);
+      }
+    },20);
+  },100);
+}
+
+// 🌹 Rose overlay with small SVG-like bouquet
+function showRoseScreen(){
+  const roseScreen=document.getElementById("roseScreen");
+  roseScreen.style.display="flex";
+
+  const canvas=document.getElementById("roseCanvas");
+  const ctx=canvas.getContext("2d");
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  // Multiple colored roses for bouquet
+  const roses = [
+    {x:300, y:300, scale:1, color:"#FF4D6D", delay:0},
+    {x:250, y:320, scale:0.8, color:"#FF8DAA", delay:30},
+    {x:350, y:320, scale:0.8, color:"#FF77CC", delay:60},
+    {x:280, y:350, scale:0.6, color:"#D966FF", delay:90},
+    {x:320, y:350, scale:0.6, color:"#FFAAFF", delay:120}
+  ];
+
+  function drawPetal(ctx, cx, cy, radius, rotation, color){
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(rotation);
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.bezierCurveTo(-radius, -radius, -radius, radius, 0, radius*1.2);
+    ctx.bezierCurveTo(radius, radius, radius, -radius, 0,0);
+    ctx.fillStyle=color;
+    ctx.fill();
+    ctx.restore();
+  }
+
+  let frame=0;
+  function animateBouquet(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    roses.forEach(rose=>{
+      if(frame*2 > rose.delay){
+        for(let i=0; i<6; i++){
+          drawPetal(ctx, rose.x, rose.y, 20*rose.scale, i*Math.PI/3, rose.color);
+        }
+      }
+    });
+    frame++;
+    if(frame < 180){
+      requestAnimationFrame(animateBouquet);
+    } else {
+      document.getElementById("foreverYes").style.opacity=1;
+    }
+  }
+  animateBouquet();
+
+  // 🌟 Forever YES click → letter
+  document.getElementById("foreverYes").onclick = function(){
+    const env = document.getElementById("letterEnvelope");
+    env.style.transform="translate(-50%,-50%) scale(1)";
+    setTimeout(()=>{
+      env.style.display="none";
+      const letter = document.getElementById("letterContent");
+      letter.style.display="block";
+      letter.style.transform="translate(-50%,-50%) scale(1)";
+    },1200);
+  };
+}
+</script>
+</body>
+</html>
